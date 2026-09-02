@@ -5,6 +5,6 @@
 
 std::vector<std::filesystem::path> buildIndex(std::string);
 std::vector<std::filesystem::path> searchFiles(const std::vector<std::filesystem::path>&, std::string);
-
+std::string upper_to_lower(std::string);
 
 

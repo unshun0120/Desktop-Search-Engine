@@ -15,9 +15,12 @@ int main() {
     index = buildIndex(dir_path);
         
     while(1){
+        vector<filesystem::path> same_keyword_res, prefix_keyword_res, substring_keyword_res;
+        
         cout << "search> ";
         cin >> keyword;
-
+        
+        keyword = upper_to_lower(keyword);
         if(keyword == "exit")
             break;
 
@@ -27,8 +30,8 @@ int main() {
             cout << "No files found." << endl;
         }
         else {
-            for(auto const& res: keyword_results){
-                cout << res << endl;
+            for(auto const& file: keyword_results) {
+                cout << file << endl;
             }
         }
     }
