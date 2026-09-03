@@ -1,2 +1,4 @@
 desktop-search.exe
 build/
+build-clangd/
+compile_commands.json
