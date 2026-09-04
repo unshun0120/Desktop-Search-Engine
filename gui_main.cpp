@@ -7,6 +7,9 @@
 #include <QLineEdit>
 #include <QListWidget>
 #include <QVBoxLayout>
+#include <QPushButton>
+#include <QLabel>
+#include <QFileDialog>
 
 #include "search.hpp"
 
@@ -14,18 +17,32 @@ using namespace std;
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
-
     QWidget window;
     QLineEdit *searchbar = new QLineEdit;
     QListWidget *result_list = new QListWidget;
+    QPushButton *folder_button = new QPushButton("Select Folder");
+    QLabel *folder_label = new QLabel("No folder selected");
     
-    string dir_path = R"(D:\github\desktop-search-engine\test_data)";
     vector<filesystem::path> index;
-    index = buildIndex(dir_path);
+
+    searchbar->setEnabled(false);
+    
+     // 選取指定資料夾
+    QObject::connect(folder_button, &QPushButton::clicked, [&]() {
+        QString selected_folder = QFileDialog::getExistingDirectory(&window, "Select Folder");
+
+        if(!selected_folder.isEmpty()) {
+            index = buildIndex(selected_folder.toStdString());
+            searchbar->setEnabled(true);
+           
+            folder_label->setText(selected_folder);          
+            result_list->clear();
+        }
+    });
 
     // 搜尋欄
     searchbar->setPlaceholderText("Search files...");
-
+    
     QObject::connect(searchbar, &QLineEdit::returnPressed, [&]() {
         string keyword = searchbar->text().toStdString();
         result_list->clear();    
@@ -42,9 +59,11 @@ int main(int argc, char *argv[]) {
         }
 
     });
-    
+
     // 排版
     QVBoxLayout *layout = new QVBoxLayout;
+    layout->addWidget(folder_button);
+    layout->addWidget(folder_label);
     layout->addWidget(searchbar);
     layout->addWidget(result_list);
 
