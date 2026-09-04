@@ -10,6 +10,9 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QFileDialog>
+#include <QDesktopServices>
+#include <QUrl>
+#include <QListWidgetItem>
 
 #include "search.hpp"
 
@@ -54,11 +57,19 @@ int main(int argc, char *argv[]) {
         }
         else{
             for(auto const& file: keyword_results){
-                result_list->addItem(QString::fromStdString(file.string()));
+                QListWidgetItem *item = new QListWidgetItem(QString::fromStdString(file.string()));
+                item->setData(Qt::UserRole, QString::fromStdString(file.string()));
+                result_list->addItem(item);
             }
         }
 
     });
+
+    QObject::connect(result_list, &QListWidget::itemDoubleClicked, [&](QListWidgetItem *item) {
+        QString file_path = item->data(Qt::UserRole).toString();
+        QUrl file_path_url = QUrl::fromLocalFile(file_path);
+        QDesktopServices::openUrl(file_path_url);
+    }); 
 
     // 排版
     QVBoxLayout *layout = new QVBoxLayout;
