@@ -32,7 +32,7 @@ vector<float> getEmbedding(const string& text) {
     // 把 JSON 轉成 HTTP 之後能送的文字
     QJsonDocument document(json);
     QByteArray body = document.toJson(QJsonDocument::Compact);
-    cout << body.toStdString() << endl;
+    // cout << body.toStdString() << endl;
 
     // 2. HTTP POST
     // http://localhost:11434/api/embed
@@ -77,7 +77,7 @@ vector<float> getEmbedding(const string& text) {
         }
      */
     QByteArray response_body = reply->readAll();
-    cout << response_body.toStdString() << endl;
+    //cout << response_body.toStdString() << endl;
 
     // 4. 讀 response["embeddings"][0]
     // 把 JSON 拆開

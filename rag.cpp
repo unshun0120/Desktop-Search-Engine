@@ -3,8 +3,10 @@
 #include <string>
 #include <fstream>
 #include <cmath>
+#include <algorithm>
 
 #include "rag.hpp"
+#include "ollama.hpp"
 
 using namespace std;
 
@@ -78,6 +80,38 @@ float cosineSimilarity(const vector<float>& a, const vector<float>& b) {
     return numerator/denominator;
 }
 
+void embedChunks(vector<Chunk>& chunks) {
+
+    for(auto& chunk : chunks) {
+        chunk.embedding = getEmbedding(chunk.text);
+    }
+
+}
+
+
+vector<RetrievalResult> retrieveTopK(const vector<Chunk>& chunks, const string& query, size_t k) {
+    vector<RetrievalResult> temp_res;
+    vector<float> query_embedding = getEmbedding(query);
+
+    for(size_t i = 0; i < chunks.size(); i++) {
+        RetrievalResult res;
+        res.chunk_position = i;
+        res.score = cosineSimilarity(query_embedding, chunks[i].embedding);
+        temp_res.push_back(res);
+    }
+    
+    sort(temp_res.begin(), temp_res.end(), [](const RetrievalResult& a, const RetrievalResult& b){
+            return a.score > b.score;    
+        }
+    );
+    
+    if(temp_res.size() > k) {
+        temp_res.resize(k);
+    }
+    
+
+    return temp_res;
+}
 
 
 
