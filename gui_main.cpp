@@ -1,7 +1,6 @@
 #include <string>
 #include <filesystem>
 #include <vector>
-
 #include <QApplication>
 #include <QWidget>
 #include <QLineEdit>
@@ -15,7 +14,7 @@
 #include <QListWidgetItem>
 
 #include "search.hpp"
-
+#include "rag.hpp"
 using namespace std;
 
 int main(int argc, char *argv[]) {
@@ -27,7 +26,8 @@ int main(int argc, char *argv[]) {
     QLabel *folder_label = new QLabel("No folder selected");
     
     vector<filesystem::path> index;
-
+    vector<Document> documents;
+  
     searchbar->setEnabled(false);
     
      // 選取指定資料夾
@@ -36,9 +36,11 @@ int main(int argc, char *argv[]) {
 
         if(!selected_folder.isEmpty()) {
             index = buildIndex(selected_folder.toStdString());
+            documents = loadDocuments(selected_folder.toStdString());
             searchbar->setEnabled(true);
-           
-            folder_label->setText(selected_folder);          
+            
+            // folder_label->setText(selected_folder);
+            folder_label->setText(QString::fromStdString(to_string(documents.size())));
             result_list->clear();
         }
     });
